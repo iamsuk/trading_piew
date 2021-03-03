@@ -11,9 +11,14 @@ let moneys = {
 const detectAd = () => {
     let ad = document.querySelector("body > div.js-rootresizer__contents > div.layout__area--center > div:nth-child(3) > div article")
 
+    let big_add = document.querySelector("button[aria-label='閉じる']")
     if (ad) {
         console.log("ad detected")
         ad.querySelector("button").click()
+    }
+    if (big_add) {
+        console.log("big add detected")
+        big_add.click()
     }
 }
 
@@ -161,7 +166,7 @@ const calculateCurrentProfit = () => {
     document.body.style.pointerEvents ="auto"
 }
 
-//買い- 売り
+//買い
 const calculateTradeResult = () => {
     //countは減ったが買い平均はそのままでいい。
     let trade_resultHMTL = document.getElementById("trade_result")
@@ -188,6 +193,13 @@ const settleAll = () => {
     calculateBuyNormal(moneys.buy_amount)
         //buy_countも0に
     calculateCurrentProfit()
+
+    return trade_resultHMTL.innerHTML
+}
+
+const resetAll = () => {
+    alert("トレード結果:" + settleAll().toString() + "円")
+    document.getElementById("trade_result").innerHTML = 0
 }
 
 const moveDateDelay = () => {
@@ -200,7 +212,7 @@ const moveDateDelay = () => {
 window.addEventListener("load", () => {
     let body = document.body;
 
-    setInterval(detectAd, 1000)
+    setInterval(detectAd, 300)
 
     let startDemotradeButton = `<button id="start_demotrade" style="    color: #eee;
     display: inline-block;
@@ -223,7 +235,7 @@ window.addEventListener("load", () => {
             console.log("demo trade start")
 
             let tradeDiv = `
-            <div id="myTrade" style="min-width:150px; background:rgba(255,255,255,0.7); color:black;  display:inline-block; position:absolute; top:100px; left:300px; text-align:center; align-items:center;">
+            <div id="myTrade" style="min-width:150px; background:rgba(255,255,255,0.1); color:white;  display:inline-block; position:absolute; top:100px; left:300px; text-align:center; align-items:center;">
                 <div style="display:flex; justify-content:space-around; ">
                     <p>現在の損益</p>
                     <p><span id="current_profit">0</span>円</p>
@@ -253,6 +265,7 @@ window.addEventListener("load", () => {
                     <!--売りー  -->
                 </div>
                 <p id="settle_all" style="margin:7px 10px;">全決算</p>
+                <p id="reset_all" style="margin:7px 10px;">リセット</p>
             </div>
         `
         body.insertAdjacentHTML('beforeend', tradeDiv)
@@ -263,6 +276,7 @@ window.addEventListener("load", () => {
         // document.getElementById("sell_plus").addEventListener("click", addSellCount)
         // document.getElementById("sell_minus").addEventListener("click", lessenSellCount)
         document.getElementById("settle_all").addEventListener("dblclick", settleAll)
+        document.getElementById("reset_all").addEventListener("dblclick", resetAll)
         moveDateButton.addEventListener("click",moveDateDelay)
     
 
