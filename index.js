@@ -159,7 +159,7 @@ const calculateCurrentProfit = () => {
     let buy_count = Number(document.getElementById("buy_count").innerHTML)
     let closingPrice = getClosingPrice()
 
-    moneys.current_profit = (closingPrice * buy_count) - moneys.buy_amount
+    moneys.current_profit = ((closingPrice * buy_count)*10 - moneys.buy_amount*10)/10
     document.getElementById("current_profit").innerHTML = moneys.current_profit
 
     logMoney()
@@ -174,7 +174,7 @@ const calculateTradeResult = () => {
     let buy_normal = calculateBuyNormal(moneys.buy_amount)
     
     //結果を更新
-    trade_resultHMTL.innerHTML = Number(trade_resultHMTL.innerHTML) + getClosingPrice() - buy_normal
+    trade_resultHMTL.innerHTML = parseInt(Number(trade_resultHMTL.innerHTML) + (getClosingPrice()*10 - buy_normal*10)/10)
 }
 
 //TODO 全決済したときの計算
