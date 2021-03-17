@@ -1,13 +1,11 @@
 let moneys = {
     buy_amount: 0,
-    // sell_amount: 0,
     current_profit: 0,
 }
 
 
 
 
-//TODO でかい広告も自動削除したい
 const detectAd = () => {
     let ad = document.querySelector("body > div.js-rootresizer__contents > div.layout__area--center > div:nth-child(3) > div article")
 
@@ -26,8 +24,14 @@ const logMoney = () => console.log(moneys)
 
 
 const getClosingPrice = () => {
+
+    let closingPriceElement = document.querySelectorAll("[class|='valueItem']")[4]
+
+    if (!closingPriceElement) {
+        alert("終値の取得に失敗しました。28行 'closingPriceElementがundefined")
+    }
     
-    let closingPrice = Number(document.getElementsByClassName("valueValue-3kA0oJs5")[4].innerHTML)
+    let closingPrice = Number(closingPriceElement.querySelector("div:nth-child(2)").innerHTML)
     console.log("CLOSINGPRICE:", closingPrice)
 
     if (isNaN(closingPrice)) {
@@ -52,7 +56,7 @@ const addBuyCount = () => {
     logMoney()
 }
 
-//TODO　利確
+//利確
 const lessenBuyCount = () => {
     let buy_countHTML = document.getElementById("buy_count")
     if (buy_count.innerHTML != 0) {
@@ -80,47 +84,6 @@ const lessenBuyCount = () => {
 }
 
 
-// const addSellCount = () => {
-//     let sell_countHTML = document.getElementById("sell_count")
-//     sell_countHTML.innerHTML = Number(sell_countHTML.innerHTML) + 1
-//     let sell_count = sell_countHTML.innerHTML
-
-//     //sell_amountに空売りした株の終値を追加
-//     moneys.sell_amount = parseInt((moneys.sell_amount + getClosingPrice())/sell_count) * sell_count
-//     //平均値をとる
-//     console.log("NEW SELL_AMOUNT: ",moneys.sell_amount)
-//     calculateSellNormal(moneys.sell_amount)
-
-//     logMoney()
-// }
-// //TODO
-// const lessenSellCount = () => {
-//     let sell_countHTML = document.getElementById("sell_count")
-//     if (sell_count.innerHTML != 0) {
-//         //先にトレード結果 += 更新される前の現在の損益 / 更新される前の買い個数になっているが、売りも導入するのは難しい。
-//         //TODO 売りにも対応させる
-//         calculateTradeResult()
-        
-        
-//         //個数へらす前の売り平均を　取得
-//         let sell_normal = calculateSellNormal(moneys.sell_amount)
-//         //sell_amountはsell_normal*1分下がる
-//         moneys.sell_amount -= sell_normal
-//         //個数をへらしたので平均を　更新
-//         calculateSellNormal(moneys.sell_amount)
-
-//         //sell_countをへらす
-//         sell_countHTML.innerHTML = Number(sell_countHTML.innerHTML) - 1
-        
-//         //TODO 売りにも対応させる
-//         //sell_amountとsell_countがへった状態で現在の損益を更新
-//         calculateCurrentProfit()
-        
-//     }
-
-//     logMoney()
-// }
-
 
 const calculateBuyNormal = (buy_amount) => {
     let buy_count = Number(document.getElementById("buy_count").innerHTML)
@@ -138,21 +101,6 @@ const calculateBuyNormal = (buy_amount) => {
 }
 
 
-
-// const calculateSellNormal = (sell_amount) => {
-//     let sell_count = Number(document.getElementById("sell_count").innerHTML)
-//     //sell_amountを０で割るのを防ぐ
-//     if (!sell_count) {
-//         console.log('sell_normal became 0')
-//         document.getElementById("sell_normal").innerHTML = 0
-//         return 0
-//     } else {
-//         let sell_normal = parseInt(sell_amount / sell_count)
-//         console.log('SELLS:acn', sell_amount, sell_count, sell_normal)
-//         document.getElementById("sell_normal").innerHTML = sell_normal
-//         return sell_normal
-//     }
-// }
 
 //現在の損益 = 今の終値*buy_count - buy_amount
 const calculateCurrentProfit = () => {
@@ -177,7 +125,7 @@ const calculateTradeResult = () => {
     trade_resultHMTL.innerHTML = parseInt(Number(trade_resultHMTL.innerHTML) + (getClosingPrice()*10 - buy_normal*10)/10)
 }
 
-//TODO 全決済したときの計算
+//全決済したときの計算
 const settleAll = () => {
     let trade_resultHMTL = document.getElementById("trade_result")
     trade_resultHMTL.innerHTML = Number(trade_resultHMTL.innerHTML) + moneys.current_profit
@@ -272,22 +220,13 @@ window.addEventListener("load", () => {
     
         document.getElementById("buy_plus").addEventListener("click", addBuyCount)
         document.getElementById("buy_minus").addEventListener("click", lessenBuyCount)
-        //売りのDOM操作
-        // document.getElementById("sell_plus").addEventListener("click", addSellCount)
-        // document.getElementById("sell_minus").addEventListener("click", lessenSellCount)
         document.getElementById("settle_all").addEventListener("dblclick", settleAll)
         document.getElementById("reset_all").addEventListener("dblclick", resetAll)
         moveDateButton.addEventListener("click",moveDateDelay)
     
 
         } else {
-            alert("Enable replay mode beforehand")
+            alert("リプレイモードにしてください")
         }
     })
 })
-
-//<p>売</p>
-//<p><span id="sell_normal">0</span>円</p>
-//<p id="sell_count">0</p>
-//<p id="sell_plus" style="padding:2px 20px; background:#ff6b6b;  margin-bottom:3px;">売＋</p>
-//<p id="sell_minus" style="padding:2px 20px; background:#ff6b6b;  margin-bottom:3px;">売－</p>
